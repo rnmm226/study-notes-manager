@@ -1,20 +1,25 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import NoteForm from "@/components/NoteForm";
+
+type Note = {
+  id: number;
+  title: string;
+  content: string;
+  subject: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export default function EditNotePage() {
-  const router = useRouter();
   const params = useParams();
-
   const id = params.id as string;
 
-  const [title, setTitle] = useState("");
-  const [subject, setSubject] = useState("");
-  const [content, setContent] = useState("");
-
+  const [note, setNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -26,11 +31,8 @@ export default function EditNotePage() {
           throw new Error("Note not found");
         }
 
-        const note = await response.json();
-
-        setTitle(note.title);
-        setSubject(note.subject);
-        setContent(note.content);
+        const data = await response.json();
+        setNote(data);
       } catch (error) {
         setError(
           error instanceof Error
@@ -45,167 +47,76 @@ export default function EditNotePage() {
     loadNote();
   }, [id]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    setSaving(true);
-    setError("");
-
-    try {
-      const response = await fetch(`/api/notes/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          subject,
-          content,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to update note");
-      }
-
-      router.push(`/notes/${id}`);
-      router.refresh();
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
-    } finally {
-      setSaving(false);
-    }
-  }
-
   if (loading) {
     return (
-      <main className="min-h-screen bg-gray-50 px-6 py-12">
-        <div className="mx-auto max-w-2xl text-center text-gray-500">
-          Loading note...
+      <main className="min-h-screen bg-[var(--background)]">
+        <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
+          <div className="h-8 w-40 animate-pulse rounded-lg bg-gray-200" />
+
+          <div className="mt-8 h-96 animate-pulse rounded-2xl bg-white" />
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !note) {
+    return (
+      <main className="min-h-screen bg-[var(--background)]">
+        <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
+          <div className="card animate-scale-in">
+            <h1 className="text-2xl font-bold text-[var(--foreground)]">
+              Note not found
+            </h1>
+
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              {error || "This note does not exist."}
+            </p>
+
+            <Link
+              href="/notes"
+              className="primary-button mt-6 inline-flex"
+            >
+              Back to notes
+            </Link>
+          </div>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 px-6 py-12">
-      <div className="mx-auto max-w-2xl">
-        {/* Header */}
-        <div className="mb-8">
-          <button
-            type="button"
-            onClick={() => router.push(`/notes/${id}`)}
-            className="mb-4 text-sm text-gray-600 hover:text-gray-900"
+    <main className="min-h-screen bg-[var(--background)]">
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
+        <section className="mb-8 animate-fade-up">
+          <Link
+            href={`/notes/${note.id}`}
+            className="mb-6 inline-flex text-sm font-medium text-[var(--muted)] transition hover:text-[var(--primary)]"
           >
             ← Back to note
-          </button>
+          </Link>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
+            Edit
+          </p>
+
+          <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">
             Edit Note
           </h1>
 
-          <p className="mt-2 text-gray-600">
-            Update your study note.
+          <p className="mt-3 text-base leading-7 text-[var(--muted)]">
+            Update your study note and save your changes.
           </p>
-        </div>
+        </section>
 
-        {/* Error */}
-        {error && (
-          <div className="mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
-          </div>
-        )}
-
-        {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-xl bg-white p-6 shadow-sm"
-        >
-          <div className="space-y-6">
-            {/* Title */}
-            <div>
-              <label
-                htmlFor="title"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Title
-              </label>
-
-              <input
-                id="title"
-                type="text"
-                value={title}
-                onChange={(event) => setTitle(event.target.value)}
-                required
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-              />
-            </div>
-
-            {/* Subject */}
-            <div>
-              <label
-                htmlFor="subject"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Subject
-              </label>
-
-              <input
-                id="subject"
-                type="text"
-                value={subject}
-                onChange={(event) => setSubject(event.target.value)}
-                required
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-              />
-            </div>
-
-            {/* Content */}
-            <div>
-              <label
-                htmlFor="content"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                Content
-              </label>
-
-              <textarea
-                id="content"
-                value={content}
-                onChange={(event) => setContent(event.target.value)}
-                required
-                rows={10}
-                className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-gray-900"
-              />
-            </div>
-
-            {/* Buttons */}
-            <div className="flex justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => router.push(`/notes/${id}`)}
-                disabled={saving}
-                className="rounded-lg border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
-              >
-                Cancel
-              </button>
-
-              <button
-                type="submit"
-                disabled={saving}
-                className="rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
-            </div>
-          </div>
-        </form>
+        <NoteForm
+          mode="edit"
+          noteId={String(note.id)}
+          initialValues={{
+            title: note.title,
+            subject: note.subject,
+            content: note.content,
+          }}
+        />
       </div>
     </main>
   );

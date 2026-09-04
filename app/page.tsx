@@ -44,83 +44,100 @@ export default function HomePage() {
   const recentNotes = notes.slice(0, 5);
 
   return (
-    <main className="min-h-screen bg-gray-50 px-6 py-12">
-      <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="mb-10">
-          <p className="text-sm font-medium text-gray-500">
-            Study Notes Manager
-          </p>
+    <main className="min-h-screen bg-[var(--background)]">
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
 
-          <h1 className="mt-2 text-4xl font-bold text-gray-900">
-            Welcome back 👋
-          </h1>
-
-          <p className="mt-3 text-gray-600">
-            Organize your study notes and keep your knowledge
-            in one place.
-          </p>
-        </div>
-
-        {/* Statistics */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          {/* Total Notes */}
-          <div className="rounded-xl bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-gray-500">
-              Total Notes
+        {/* Hero */}
+        <section className="animate-fade-up">
+          <div className="max-w-3xl">
+            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
+              Study Notes Manager
             </p>
 
-            <p className="mt-2 text-4xl font-bold text-gray-900">
-              {loading ? "..." : notes.length}
-            </p>
+            <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">
+              Welcome back 👋
+            </h1>
 
-            <p className="mt-2 text-sm text-gray-500">
-              Notes in your collection
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg">
+              Organize your study notes, keep your knowledge
+              structured, and find what you need quickly.
             </p>
           </div>
+        </section>
 
-          {/* Total Subjects */}
-          <div className="rounded-xl bg-white p-6 shadow-sm">
-            <p className="text-sm font-medium text-gray-500">
-              Subjects
-            </p>
+        {/* Stats */}
+        <section className="mt-10 grid gap-5 sm:grid-cols-2">
+          <div className="card card-hover animate-fade-up">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-[var(--muted)]">
+                  Total Notes
+                </p>
 
-            <p className="mt-2 text-4xl font-bold text-gray-900">
-              {loading ? "..." : subjects.length}
-            </p>
+                <p className="mt-3 text-4xl font-bold tracking-tight text-[var(--foreground)]">
+                  {loading ? "..." : notes.length}
+                </p>
 
-            <p className="mt-2 text-sm text-gray-500">
-              Different subjects
-            </p>
+                <p className="mt-2 text-sm text-[var(--muted-light)]">
+                  Notes in your collection
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary-light)] text-xl">
+                📝
+              </div>
+            </div>
           </div>
-        </div>
+
+          <div className="card card-hover animate-fade-up [animation-delay:100ms]">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm font-medium text-[var(--muted)]">
+                  Subjects
+                </p>
+
+                <p className="mt-3 text-4xl font-bold tracking-tight text-[var(--foreground)]">
+                  {loading ? "..." : subjects.length}
+                </p>
+
+                <p className="mt-2 text-sm text-[var(--muted-light)]">
+                  Different subjects
+                </p>
+              </div>
+
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary-light)] text-xl">
+                📚
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Actions */}
-        <div className="mt-8 flex flex-wrap gap-3">
+        <section className="mt-7 flex flex-wrap gap-3 animate-fade-up [animation-delay:150ms]">
           <Link
             href="/notes"
-            className="rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white hover:bg-gray-800"
+            className="primary-button"
           >
-            View All Notes
+            View All Notes →
           </Link>
 
           <Link
             href="/notes/new"
-            className="rounded-lg border border-gray-300 bg-white px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className="rounded-xl border border-[var(--border)] bg-white px-5 py-3 text-sm font-semibold text-[var(--foreground)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
           >
-            + New Note
+            + Create Note
           </Link>
-        </div>
+        </section>
 
         {/* Recent Notes */}
-        <section className="mt-12">
-          <div className="mb-5 flex items-center justify-between">
+        <section className="mt-14 animate-fade-up [animation-delay:200ms]">
+          <div className="mb-6 flex items-end justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
                 Recent Notes
               </h2>
 
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-[var(--muted)]">
                 Your latest study notes.
               </p>
             </div>
@@ -128,7 +145,7 @@ export default function HomePage() {
             {notes.length > 5 && (
               <Link
                 href="/notes"
-                className="text-sm font-medium text-gray-700 hover:text-gray-900"
+                className="text-sm font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
               >
                 View all →
               </Link>
@@ -136,24 +153,34 @@ export default function HomePage() {
           </div>
 
           {loading && (
-            <div className="rounded-xl bg-white p-8 text-center text-gray-500 shadow-sm">
-              Loading notes...
+            <div className="grid gap-4">
+              {[1, 2, 3].map((item) => (
+                <div
+                  key={item}
+                  className="h-28 animate-pulse rounded-2xl border border-[var(--border)] bg-white"
+                />
+              ))}
             </div>
           )}
 
           {!loading && recentNotes.length === 0 && (
-            <div className="rounded-xl bg-white p-10 text-center shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900">
+            <div className="card animate-scale-in p-10 text-center sm:p-14">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-2xl">
+                📝
+              </div>
+
+              <h3 className="mt-5 text-xl font-bold text-[var(--foreground)]">
                 No notes yet
               </h3>
 
-              <p className="mt-2 text-sm text-gray-500">
-                Start by creating your first study note.
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">
+                Start building your study collection by creating
+                your first note.
               </p>
 
               <Link
                 href="/notes/new"
-                className="mt-5 inline-block rounded-lg bg-gray-900 px-5 py-3 text-sm font-medium text-white hover:bg-gray-800"
+                className="primary-button mt-6 inline-flex"
               >
                 Create your first note
               </Link>
@@ -162,31 +189,32 @@ export default function HomePage() {
 
           {!loading && recentNotes.length > 0 && (
             <div className="grid gap-4">
-              {recentNotes.map((note) => (
+              {recentNotes.map((note, index) => (
                 <Link
                   key={note.id}
                   href={`/notes/${note.id}`}
-                  className="block rounded-xl bg-white p-5 shadow-sm transition hover:shadow-md"
+                  className="card card-hover block animate-fade-up"
+                  style={{
+                    animationDelay: `${index * 70}ms`,
+                  }}
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <span className="inline-flex rounded-full bg-[var(--primary-light)] px-3 py-1 text-xs font-semibold text-[var(--primary)]">
                         {note.subject}
                       </span>
 
-                      <h3 className="mt-3 text-lg font-semibold text-gray-900">
+                      <h3 className="mt-3 truncate text-lg font-bold text-[var(--foreground)]">
                         {note.title}
                       </h3>
 
-                      <p className="mt-1 line-clamp-2 text-sm text-gray-500">
+                      <p className="mt-1 line-clamp-2 text-sm leading-6 text-[var(--muted)]">
                         {note.content}
                       </p>
                     </div>
 
-                    <span className="shrink-0 text-sm text-gray-400">
-                      {new Date(
-                        note.createdAt
-                      ).toLocaleDateString()}
+                    <span className="shrink-0 text-xs font-medium text-[var(--muted-light)]">
+                      {new Date(note.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                 </Link>
