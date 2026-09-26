@@ -13,33 +13,18 @@ type NoteFormProps = {
   noteId?: string;
 };
 
-export default function NoteForm({
-  mode = "create",
-  initialValues,
-  noteId,
-}: NoteFormProps) {
+export default function NoteForm({ mode = "create", initialValues, noteId }: NoteFormProps) {
   const router = useRouter();
-
-  const [title, setTitle] = useState(
-    initialValues?.title ?? ""
-  );
-  const [subject, setSubject] = useState(
-    initialValues?.subject ?? ""
-  );
-  const [content, setContent] = useState(
-    initialValues?.content ?? ""
-  );
-
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [subject, setSubject] = useState(initialValues?.subject ?? "");
+  const [content, setContent] = useState(initialValues?.content ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   const isEdit = mode === "edit";
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     setError("");
 
     if (!title.trim() || !subject.trim() || !content.trim()) {
@@ -49,175 +34,156 @@ export default function NoteForm({
 
     try {
       setSaving(true);
-
-      const response = await fetch(
-        isEdit ? `/api/notes/${noteId}` : "/api/notes",
-        {
-          method: isEdit ? "PUT" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: title.trim(),
-            subject: subject.trim(),
-            content: content.trim(),
-          }),
-        }
-      );
+      const response = await fetch(isEdit ? `/api/notes/${noteId}` : "/api/notes", {
+        method: isEdit ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: title.trim(),
+          subject: subject.trim(),
+          content: content.trim(),
+        }),
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.error ||
-            `Failed to ${isEdit ? "update" : "create"} note`
-        );
+        throw new Error(data.error || `Failed to ${isEdit ? "update" : "create"} note`);
       }
 
-      if (isEdit) {
-        router.push(`/notes/${noteId}`);
-      } else {
-        router.push("/notes");
-      }
-
+      router.push(isEdit ? `/notes/${noteId}` : "/notes");
       router.refresh();
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong"
-      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="card animate-scale-in"
-    >
-      <div className="space-y-7">
+    <form onSubmit={handleSubmit} className="card animate-scale-in" style={{ padding: "2rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
         {/* Title */}
         <div>
-          <label
-            htmlFor="title"
-            className="mb-2 block text-sm font-semibold --foreground"
-          >
+          <label htmlFor="title" style={labelStyle}>
             Title
           </label>
-
           <input
             id="title"
             type="text"
             value={title}
-            onChange={(event) =>
-              setTitle(event.target.value)
-            }
-            placeholder="e.g. SQL Joins"
+            onChange={e => setTitle(e.target.value)}
+            placeholder="e.g. SQL Joins explained"
             disabled={saving}
             required
-            className="w-full rounded-xl border border---border bg-(--background) px-4 py-3 text-sm --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="form-input"
           />
         </div>
 
         {/* Subject */}
         <div>
-          <label
-            htmlFor="subject"
-            className="mb-2 block text-sm font-semibold --foreground"
-          >
+          <label htmlFor="subject" style={labelStyle}>
             Subject
           </label>
-
           <input
             id="subject"
             type="text"
             value={subject}
-            onChange={(event) =>
-              setSubject(event.target.value)
-            }
-            placeholder="e.g. Database"
+            onChange={e => setSubject(e.target.value)}
+            placeholder="e.g. Database, Math, Chemistry…"
             disabled={saving}
             required
-            className="w-full rounded-xl border border---border bg-(--background) px-4 py-3 text-sm --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="form-input"
           />
         </div>
 
         {/* Content */}
         <div>
-          <div className="mb-2 flex items-center justify-between">
-            <label
-              htmlFor="content"
-              className="block text-sm font-semibold --foreground"
-            >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+            <label htmlFor="content" style={labelStyle}>
               Content
             </label>
-
-            <span className="text-xs --muted-light">
-              {content.length} characters
+            <span style={{ fontSize: "0.75rem", color: "var(--muted-light)" }}>
+              {content.trim().split(/\s+/).filter(Boolean).length} words
             </span>
           </div>
-
           <textarea
             id="content"
             value={content}
-            onChange={(event) =>
-              setContent(event.target.value)
-            }
-            placeholder="Write your study notes here..."
+            onChange={e => setContent(e.target.value)}
+            placeholder="Write your study notes here…"
             disabled={saving}
             required
-            rows={12}
-            className="w-full resize-y rounded-xl border border---border bg-(--background) px-4 py-3 text-sm leading-6 --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+            rows={14}
+            className="form-input"
+            style={{ resize: "vertical", lineHeight: "1.7" }}
           />
         </div>
 
         {/* Error */}
         {error && (
-          <div className="animate-scale-in rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-            <p className="text-sm font-semibold text-red-700">
-              Something went wrong
-            </p>
-
-            <p className="mt-1 text-sm text-red-600">
+          <div
+            className="animate-scale-in rounded-xl px-4 py-3"
+            style={{
+              background: "var(--danger-light)",
+              border: "1px solid #fca5a5",
+            }}
+          >
+            <p className="text-sm font-semibold" style={{ color: "#991b1b" }}>
               {error}
             </p>
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex flex-col-reverse gap-3 border-t border---border pt-6 sm:flex-row sm:justify-end">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            gap: "0.75rem",
+            borderTop: "1px solid var(--border)",
+            paddingTop: "1.5rem",
+            flexWrap: "wrap",
+          }}
+        >
           <button
             type="button"
-            onClick={() =>
-              router.push(
-                isEdit
-                  ? `/notes/${noteId}`
-                  : "/notes"
-              )
-            }
+            onClick={() => router.push(isEdit ? `/notes/${noteId}` : "/notes")}
             disabled={saving}
-            className="rounded-xl border border---border bg-white px-5 py-3 text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:bg-(--background) hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl text-sm font-semibold transition"
+            style={{
+              padding: "0.7rem 1.25rem",
+              border: "1.5px solid var(--border)",
+              background: "white",
+              color: "var(--foreground)",
+              cursor: "pointer",
+            }}
           >
             Cancel
           </button>
-
           <button
             type="submit"
             disabled={saving}
-            className="primary-button disabled:cursor-not-allowed disabled:opacity-60"
+            className="primary-button"
           >
             {saving ? (
               <>
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                {isEdit ? "Saving..." : "Creating..."}
+                <span
+                  className="animate-spin"
+                  style={{
+                    display: "inline-block",
+                    width: "14px",
+                    height: "14px",
+                    border: "2px solid rgba(255,255,255,0.35)",
+                    borderTopColor: "white",
+                    borderRadius: "50%",
+                  }}
+                />
+                {isEdit ? "Saving…" : "Creating…"}
               </>
             ) : (
-              <>
-                {isEdit ? "Save Changes" : "Create Note"}
-              </>
+              isEdit ? "Save changes" : "Create note"
             )}
           </button>
         </div>
@@ -225,3 +191,11 @@ export default function NoteForm({
     </form>
   );
 }
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  marginBottom: "0.5rem",
+  fontSize: "0.8125rem",
+  fontWeight: 600,
+  color: "var(--foreground)",
+};
