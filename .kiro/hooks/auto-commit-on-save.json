@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto Commit and Push on Save",
+      "trigger": "PostFileSave",
+      "description": "Automatically commits and pushes all changes to GitHub after each file save",
+      "action": {
+        "type": "command",
+        "command": "cd \"c:\\Users\\rnmdr\\OneDrive\\Documents\\study-notes\" && git add . && git diff --cached --quiet || git commit -m \"auto-save: update $(date +%Y-%m-%d %H:%M:%S)\" && git push origin main"
+      }
+    }
+  ]
+}
