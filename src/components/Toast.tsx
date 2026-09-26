@@ -30,14 +30,14 @@ export default function Toast({
         {type === "success" ? "✓" : "!"}
       </div>
 
-      <p className="flex-1 text-sm font-semibold text-[var(--foreground)]">
+      <p className="flex-1 text-sm font-semibold --foreground">
         {message}
       </p>
 
       <button
         type="button"
         onClick={onClose}
-        className="rounded-lg px-2 py-1 text-lg leading-none text-[var(--muted-light)] transition hover:bg-gray-100 hover:text-[var(--foreground)]"
+        className="rounded-lg px-2 py-1 text-lg leading-none --muted-light transition hover:bg-gray-100 hover:--foreground"
         aria-label="Close notification"
       >
         ×

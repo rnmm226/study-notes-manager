@@ -49,7 +49,7 @@ export default function EditNotePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[var(--background)]">
+      <main className="min-h-screen bg-(--background)">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
           <div className="h-8 w-40 animate-pulse rounded-lg bg-gray-200" />
 
@@ -61,14 +61,14 @@ export default function EditNotePage() {
 
   if (error || !note) {
     return (
-      <main className="min-h-screen bg-[var(--background)]">
+      <main className="min-h-screen bg-(--background)">
         <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
           <div className="card animate-scale-in">
-            <h1 className="text-2xl font-bold text-[var(--foreground)]">
+            <h1 className="text-2xl font-bold --foreground">
               Note not found
             </h1>
 
-            <p className="mt-2 text-sm text-[var(--muted)]">
+            <p className="mt-2 text-sm --muted">
               {error || "This note does not exist."}
             </p>
 
@@ -85,25 +85,25 @@ export default function EditNotePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--background)]">
+    <main className="min-h-screen bg-(--background)">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
         <section className="mb-8 animate-fade-up">
           <Link
             href={`/notes/${note.id}`}
-            className="mb-6 inline-flex text-sm font-medium text-[var(--muted)] transition hover:text-[var(--primary)]"
+            className="mb-6 inline-flex text-sm font-medium --muted transition hover:--primary"
           >
             ← Back to note
           </Link>
 
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wider --primary">
             Edit
           </p>
 
-          <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">
+          <h1 className="display-title text-4xl font-bold tracking-tight --foreground sm:text-5xl">
             Edit Note
           </h1>
 
-          <p className="mt-3 text-base leading-7 text-[var(--muted)]">
+          <p className="mt-3 text-base leading-7 --muted">
             Update your study note and save your changes.
           </p>
         </section>

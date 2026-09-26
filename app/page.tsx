@@ -1,228 +1,212 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-
-type Note = {
-  id: number;
-  title: string;
-  content: string;
-  subject: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { authClient } from "@/lib/auth-client";
+import DashboardPage from "./dashboard/DashboardPage";
 
 export default function HomePage() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: session, isPending } = authClient.useSession();
 
-  useEffect(() => {
-    async function loadNotes() {
-      try {
-        const response = await fetch("/api/notes");
+  if (isPending) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[var(--background)]">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--primary-light)] border-t-[var(--primary)]" />
+      </main>
+    );
+  }
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch notes");
-        }
-
-        const data = await response.json();
-        setNotes(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadNotes();
-  }, []);
-
-  const subjects = Array.from(
-    new Set(notes.map((note) => note.subject))
-  );
-
-  const recentNotes = notes.slice(0, 5);
+  if (session) {
+    return <DashboardPage />;
+  }
 
   return (
-    <main className="min-h-screen bg-[var(--background)]">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+    <main className="min-h-screen overflow-hidden bg-[var(--background)]">
+      {/* Hero */}
+      <section className="relative">
+        <div className="mx-auto max-w-6xl px-4 pb-20 pt-20 sm:px-6 sm:pb-28 sm:pt-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="animate-fade-up">
+              <span className="inline-flex items-center rounded-full bg-[var(--primary-light)] px-4 py-2 text-sm font-semibold text-[var(--primary)]">
+                ✦ Your personal study space
+              </span>
+            </div>
 
-        {/* Hero */}
-        <section className="animate-fade-up">
-          <div className="max-w-3xl">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
-              Study Notes Manager
-            </p>
-
-            <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">
-              Welcome back 👋
+            <h1
+              className="display-title mt-7 animate-fade-up text-5xl font-bold leading-tight text-[var(--foreground)] sm:text-6xl lg:text-7xl"
+              style={{ animationDelay: "80ms" }}
+            >
+              Organize your learning.
+              <span className="block text-[var(--primary)]">
+                Study smarter.
+              </span>
             </h1>
 
-            <p className="mt-4 max-w-2xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-              Organize your study notes, keep your knowledge
-              structured, and find what you need quickly.
+            <p
+              className="mx-auto mt-6 max-w-2xl animate-fade-up text-lg leading-8 text-[var(--muted)] sm:text-xl"
+              style={{ animationDelay: "160ms" }}
+            >
+              Keep all your study notes organized in one simple,
+              beautiful workspace. Create, edit, search and manage
+              your notes effortlessly.
+            </p>
+
+            <div
+              className="mt-9 flex animate-fade-up flex-col items-center justify-center gap-3 sm:flex-row"
+              style={{ animationDelay: "240ms" }}
+            >
+              <Link
+                href="/register"
+                className="primary-button w-full sm:w-auto"
+              >
+                Get Started
+                <span aria-hidden="true">→</span>
+              </Link>
+
+              <Link
+                href="/login"
+                className="w-full rounded-xl border border-[var(--border)] bg-white px-5 py-3 text-center text-sm font-semibold text-[var(--foreground)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--primary)] hover:text-[var(--primary)] sm:w-auto"
+              >
+                Sign In
+              </Link>
+            </div>
+          </div>
+
+          {/* Preview */}
+          <div
+            className="mx-auto mt-16 max-w-5xl animate-scale-in"
+            style={{ animationDelay: "350ms" }}
+          >
+            <div className="rounded-2xl border border-[var(--border)] bg-white p-3 shadow-xl shadow-black/5 sm:p-5">
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-5 sm:p-7">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="h-3 w-24 rounded-full bg-gray-200" />
+                    <div className="mt-3 h-6 w-40 rounded-lg bg-gray-300" />
+                  </div>
+
+                  <div className="h-10 w-28 rounded-xl bg-[var(--primary-light)]" />
+                </div>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                  <div className="card">
+                    <div className="h-5 w-20 rounded-full bg-[var(--primary-light)]" />
+                    <div className="mt-5 h-5 w-4/5 rounded bg-gray-200" />
+                    <div className="mt-3 h-3 w-full rounded bg-gray-100" />
+                    <div className="mt-2 h-3 w-3/4 rounded bg-gray-100" />
+                  </div>
+
+                  <div className="card">
+                    <div className="h-5 w-24 rounded-full bg-[var(--primary-light)]" />
+                    <div className="mt-5 h-5 w-3/4 rounded bg-gray-200" />
+                    <div className="mt-3 h-3 w-full rounded bg-gray-100" />
+                    <div className="mt-2 h-3 w-2/3 rounded bg-gray-100" />
+                  </div>
+
+                  <div className="card">
+                    <div className="h-5 w-20 rounded-full bg-[var(--primary-light)]" />
+                    <div className="mt-5 h-5 w-4/5 rounded bg-gray-200" />
+                    <div className="mt-3 h-3 w-full rounded bg-gray-100" />
+                    <div className="mt-2 h-3 w-3/4 rounded bg-gray-100" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="border-t border-[var(--border)] bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
+              Everything you need
+            </p>
+
+            <h2 className="display-title mt-3 text-3xl font-bold text-[var(--foreground)] sm:text-4xl">
+              A simpler way to study
+            </h2>
+
+            <p className="mt-4 text-[var(--muted)]">
+              Focus on learning while Study Notes takes care of
+              keeping everything organized.
             </p>
           </div>
-        </section>
 
-        {/* Stats */}
-        <section className="mt-10 grid gap-5 sm:grid-cols-2">
-          <div className="card card-hover animate-fade-up">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-[var(--muted)]">
-                  Total Notes
-                </p>
-
-                <p className="mt-3 text-4xl font-bold tracking-tight text-[var(--foreground)]">
-                  {loading ? "..." : notes.length}
-                </p>
-
-                <p className="mt-2 text-sm text-[var(--muted-light)]">
-                  Notes in your collection
-                </p>
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            <div className="card card-hover">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-xl">
+                ✎
               </div>
 
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary-light)] text-xl">
-                📝
-              </div>
-            </div>
-          </div>
-
-          <div className="card card-hover animate-fade-up [animation-delay:100ms]">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm font-medium text-[var(--muted)]">
-                  Subjects
-                </p>
-
-                <p className="mt-3 text-4xl font-bold tracking-tight text-[var(--foreground)]">
-                  {loading ? "..." : subjects.length}
-                </p>
-
-                <p className="mt-2 text-sm text-[var(--muted-light)]">
-                  Different subjects
-                </p>
-              </div>
-
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary-light)] text-xl">
-                📚
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Actions */}
-        <section className="mt-7 flex flex-wrap gap-3 animate-fade-up [animation-delay:150ms]">
-          <Link
-            href="/notes"
-            className="primary-button"
-          >
-            View All Notes →
-          </Link>
-
-          <Link
-            href="/notes/new"
-            className="rounded-xl border border-[var(--border)] bg-white px-5 py-3 text-sm font-semibold text-[var(--foreground)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          >
-            + Create Note
-          </Link>
-        </section>
-
-        {/* Recent Notes */}
-        <section className="mt-14 animate-fade-up [animation-delay:200ms]">
-          <div className="mb-6 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
-                Recent Notes
-              </h2>
-
-              <p className="mt-1 text-sm text-[var(--muted)]">
-                Your latest study notes.
-              </p>
-            </div>
-
-            {notes.length > 5 && (
-              <Link
-                href="/notes"
-                className="text-sm font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
-              >
-                View all →
-              </Link>
-            )}
-          </div>
-
-          {loading && (
-            <div className="grid gap-4">
-              {[1, 2, 3].map((item) => (
-                <div
-                  key={item}
-                  className="h-28 animate-pulse rounded-2xl border border-[var(--border)] bg-white"
-                />
-              ))}
-            </div>
-          )}
-
-          {!loading && recentNotes.length === 0 && (
-            <div className="card animate-scale-in p-10 text-center sm:p-14">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-2xl">
-                📝
-              </div>
-
-              <h3 className="mt-5 text-xl font-bold text-[var(--foreground)]">
-                No notes yet
+              <h3 className="mt-5 text-lg font-bold">
+                Create notes
               </h3>
 
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">
-                Start building your study collection by creating
-                your first note.
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                Quickly create notes with a title, subject and
+                detailed content.
               </p>
-
-              <Link
-                href="/notes/new"
-                className="primary-button mt-6 inline-flex"
-              >
-                Create your first note
-              </Link>
             </div>
-          )}
 
-          {!loading && recentNotes.length > 0 && (
-            <div className="grid gap-4">
-              {recentNotes.map((note, index) => (
-                <Link
-                  key={note.id}
-                  href={`/notes/${note.id}`}
-                  className="card card-hover block animate-fade-up"
-                  style={{
-                    animationDelay: `${index * 70}ms`,
-                  }}
-                >
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div className="min-w-0">
-                      <span className="inline-flex rounded-full bg-[var(--primary-light)] px-3 py-1 text-xs font-semibold text-[var(--primary)]">
-                        {note.subject}
-                      </span>
+            <div className="card card-hover">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-xl">
+                ◈
+              </div>
 
-                      <h3 className="mt-3 truncate text-lg font-bold text-[var(--foreground)]">
-                        {note.title}
-                      </h3>
+              <h3 className="mt-5 text-lg font-bold">
+                Stay organized
+              </h3>
 
-                      <p className="mt-1 line-clamp-2 text-sm leading-6 text-[var(--muted)]">
-                        {note.content}
-                      </p>
-                    </div>
-
-                    <span className="shrink-0 text-xs font-medium text-[var(--muted-light)]">
-                      {new Date(note.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                Keep your subjects and notes organized in one
+                central workspace.
+              </p>
             </div>
-          )}
-        </section>
-      </div>
+
+            <div className="card card-hover">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-xl">
+                ✓
+              </div>
+
+              <h3 className="mt-5 text-lg font-bold">
+                Study efficiently
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                Find your notes quickly and spend more time
+                focusing on what matters.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-[var(--primary)]">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 sm:py-20">
+          <h2 className="display-title text-3xl font-bold text-white sm:text-4xl">
+            Ready to organize your notes?
+          </h2>
+
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
+            Create your free account and start building your
+            personal study workspace.
+          </p>
+
+          <Link
+            href="/register"
+            className="mt-7 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[var(--primary)] shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+          >
+            Create your account
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-[var(--border)] bg-white px-4 py-8 text-center text-sm text-[var(--muted)]">
+        © {new Date().getFullYear()} Study Notes Manager
+      </footer>
     </main>
   );
 }

@@ -103,7 +103,7 @@ export default function NoteForm({
         <div>
           <label
             htmlFor="title"
-            className="mb-2 block text-sm font-semibold text-[var(--foreground)]"
+            className="mb-2 block text-sm font-semibold --foreground"
           >
             Title
           </label>
@@ -118,7 +118,7 @@ export default function NoteForm({
             placeholder="e.g. SQL Joins"
             disabled={saving}
             required
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted-light)] focus:border-[var(--primary)] focus:bg-white focus:ring-2 focus:ring-[var(--primary)]/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl border border---border bg-(--background) px-4 py-3 text-sm --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -126,7 +126,7 @@ export default function NoteForm({
         <div>
           <label
             htmlFor="subject"
-            className="mb-2 block text-sm font-semibold text-[var(--foreground)]"
+            className="mb-2 block text-sm font-semibold --foreground"
           >
             Subject
           </label>
@@ -141,7 +141,7 @@ export default function NoteForm({
             placeholder="e.g. Database"
             disabled={saving}
             required
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted-light)] focus:border-[var(--primary)] focus:bg-white focus:ring-2 focus:ring-[var(--primary)]/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl border border---border bg-(--background) px-4 py-3 text-sm --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -150,12 +150,12 @@ export default function NoteForm({
           <div className="mb-2 flex items-center justify-between">
             <label
               htmlFor="content"
-              className="block text-sm font-semibold text-[var(--foreground)]"
+              className="block text-sm font-semibold --foreground"
             >
               Content
             </label>
 
-            <span className="text-xs text-[var(--muted-light)]">
+            <span className="text-xs --muted-light">
               {content.length} characters
             </span>
           </div>
@@ -170,7 +170,7 @@ export default function NoteForm({
             disabled={saving}
             required
             rows={12}
-            className="w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm leading-6 text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted-light)] focus:border-[var(--primary)] focus:bg-white focus:ring-2 focus:ring-[var(--primary)]/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full resize-y rounded-xl border border---border bg-(--background) px-4 py-3 text-sm leading-6 --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10 disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
 
@@ -188,7 +188,7 @@ export default function NoteForm({
         )}
 
         {/* Actions */}
-        <div className="flex flex-col-reverse gap-3 border-t border-[var(--border)] pt-6 sm:flex-row sm:justify-end">
+        <div className="flex flex-col-reverse gap-3 border-t border---border pt-6 sm:flex-row sm:justify-end">
           <button
             type="button"
             onClick={() =>
@@ -199,7 +199,7 @@ export default function NoteForm({
               )
             }
             disabled={saving}
-            className="rounded-xl border border-[var(--border)] bg-white px-5 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:-translate-y-0.5 hover:bg-[var(--background)] hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl border border---border bg-white px-5 py-3 text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:bg-(--background) hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
           >
             Cancel
           </button>

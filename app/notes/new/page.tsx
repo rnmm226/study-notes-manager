@@ -5,27 +5,27 @@ import NoteForm from "@/components/NoteForm";
 
 export default function NewNotePage() {
   return (
-    <main className="min-h-screen bg-[var(--background)]">
+    <main className="min-h-screen bg-(--background)">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
 
         {/* Header */}
         <section className="mb-8 animate-fade-up">
           <Link
             href="/notes"
-            className="mb-6 inline-flex items-center text-sm font-medium text-[var(--muted)] transition hover:text-[var(--primary)]"
+            className="mb-6 inline-flex items-center text-sm font-medium --muted transition hover:--primary"
           >
             ← Back to notes
           </Link>
 
-          <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-wider --primary">
             Your collection
           </p>
 
-          <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">
+          <h1 className="display-title text-4xl font-bold tracking-tight --foreground sm:text-5xl">
             Create a Note
           </h1>
 
-          <p className="mt-3 max-w-xl text-base leading-7 text-[var(--muted)]">
+          <p className="mt-3 max-w-xl text-base leading-7 --muted">
             Add a new study note to keep your knowledge
             organized and easy to find.
           </p>

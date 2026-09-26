@@ -49,35 +49,35 @@ export default function NoteCard({
         <div className="flex items-start justify-between gap-4">
           <SubjectBadge subject={note.subject} />
 
-          <time className="shrink-0 text-xs font-medium text-[var(--muted-light)]">
+          <time className="shrink-0 text-xs font-medium --muted-light">
             {new Date(note.createdAt).toLocaleDateString()}
           </time>
         </div>
 
         {/* Content */}
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+          <h2 className="text-xl font-bold tracking-tight --foreground">
             {note.title}
           </h2>
 
-          <p className="mt-2 line-clamp-4 whitespace-pre-wrap text-sm leading-6 text-[var(--muted)]">
+          <p className="mt-2 line-clamp-4 whitespace-pre-wrap text-sm leading-6 --muted">
             {note.content}
           </p>
         </div>
 
         {/* Actions */}
         {!confirmingDelete ? (
-          <div className="flex flex-wrap gap-2 border-t border-[var(--border)] pt-4">
+          <div className="flex flex-wrap gap-2 border-t border---border pt-4">
             <Link
               href={`/notes/${note.id}`}
-              className="rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[var(--foreground)] transition hover:-translate-y-0.5 hover:border-[var(--primary)] hover:text-[var(--primary)]"
+              className="rounded-xl border border---border bg-white px-4 py-2 text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:border---primary hover:--primary"
             >
               View
             </Link>
 
             <Link
               href={`/notes/${note.id}/edit`}
-              className="rounded-xl border border-[var(--border)] bg-white px-4 py-2 text-sm font-semibold text-[var(--foreground)] transition hover:-translate-y-0.5 hover:border-[var(--primary)] hover:text-[var(--primary)]"
+              className="rounded-xl border border---border bg-white px-4 py-2 text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:border---primary hover:--primary"
             >
               Edit
             </Link>
@@ -85,7 +85,7 @@ export default function NoteCard({
             <button
               type="button"
               onClick={() => setConfirmingDelete(true)}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-[var(--danger)] transition hover:bg-red-50"
+              className="rounded-xl px-4 py-2 text-sm font-semibold --danger transition hover:bg-red-50"
             >
               Delete
             </button>

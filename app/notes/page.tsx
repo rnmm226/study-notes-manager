@@ -129,22 +129,22 @@ export default function NotesPage() {
       onClose={() => setToast("")}
     />
 
-    <main className="min-h-screen bg-[var(--background)]">
+    <main className="min-h-screen bg-(--background)">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
 
         {/* Header */}
         <section className="animate-fade-up">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-[var(--primary)]">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-wider --primary">
                 Your collection
               </p>
 
-              <h1 className="display-title text-4xl font-bold tracking-tight text-[var(--foreground)] sm:text-5xl">
+              <h1 className="display-title text-4xl font-bold tracking-tight --foreground sm:text-5xl">
                 My Notes
               </h1>
 
-              <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--muted)]">
+              <p className="mt-3 max-w-2xl text-base leading-7 --muted">
                 Browse, search, and manage all your study notes
                 in one place.
               </p>
@@ -166,7 +166,7 @@ export default function NotesPage() {
               <div className="flex flex-col gap-3 md:flex-row">
 
                 <div className="relative flex-1">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base text-[var(--muted-light)]">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base --muted-light">
                     🔍
                   </span>
 
@@ -177,7 +177,7 @@ export default function NotesPage() {
                       setSearch(event.target.value)
                     }
                     placeholder="Search notes..."
-                    className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] py-3 pl-11 pr-4 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted-light)] focus:border-[var(--primary)] focus:bg-white focus:ring-2 focus:ring-[var(--primary)]/10"
+                    className="w-full rounded-xl border border---border bg-(--background) py-3 pl-11 pr-4 text-sm --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10"
                   />
                 </div>
 
@@ -186,7 +186,7 @@ export default function NotesPage() {
                   onChange={(event) =>
                     setSubjectFilter(event.target.value)
                   }
-                  className="rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm font-medium text-[var(--foreground)] outline-none transition focus:border-[var(--primary)] focus:bg-white focus:ring-2 focus:ring-[var(--primary)]/10"
+                  className="rounded-xl border border---border bg-(--background) px-4 py-3 text-sm font-medium --foreground outline-none transition focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10"
                 >
                   {subjects.map((subject) => (
                     <option key={subject} value={subject}>
@@ -228,15 +228,15 @@ export default function NotesPage() {
           !error &&
           notes.length === 0 && (
             <section className="card mt-10 animate-scale-in p-10 text-center sm:p-16">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-3xl">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg---primary-light text-3xl">
                 📝
               </div>
 
-              <h2 className="mt-6 text-2xl font-bold text-[var(--foreground)]">
+              <h2 className="mt-6 text-2xl font-bold --foreground">
                 No notes yet
               </h2>
 
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--muted)]">
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 --muted">
                 Your collection is empty. Create your first
                 study note to get started.
               </p>
@@ -257,7 +257,7 @@ export default function NotesPage() {
             <section className="mt-10">
 
               <div className="mb-5 flex items-center justify-between gap-4">
-                <p className="text-sm font-medium text-[var(--muted)]">
+                <p className="text-sm font-medium --muted">
                   {filteredNotes.length}{" "}
                   {filteredNotes.length === 1
                     ? "note"
@@ -269,7 +269,7 @@ export default function NotesPage() {
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="text-sm font-semibold text-[var(--primary)] transition hover:text-[var(--primary-dark)]"
+                    className="text-sm font-semibold --primary transition hover:--primary-dark"
                   >
                     Clear filters
                   </button>
@@ -279,15 +279,15 @@ export default function NotesPage() {
               {/* No results */}
               {filteredNotes.length === 0 && (
                 <div className="card animate-scale-in p-10 text-center sm:p-14">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-light)] text-2xl">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg---primary-light text-2xl">
                     🔎
                   </div>
 
-                  <h2 className="mt-5 text-xl font-bold text-[var(--foreground)]">
+                  <h2 className="mt-5 text-xl font-bold --foreground">
                     No matching notes
                   </h2>
 
-                  <p className="mt-2 text-sm text-[var(--muted)]">
+                  <p className="mt-2 text-sm --muted">
                     Try another search term or subject.
                   </p>
 

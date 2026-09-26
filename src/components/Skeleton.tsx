@@ -17,7 +17,7 @@ export function NoteCardSkeleton() {
           </div>
         </div>
 
-        <div className="flex gap-2 border-t border-[var(--border)] pt-4">
+        <div className="flex gap-2 border-t border---border pt-4">
           <div className="h-9 w-20 animate-pulse rounded-xl bg-gray-200" />
           <div className="h-9 w-20 animate-pulse rounded-xl bg-gray-200" />
           <div className="h-9 w-20 animate-pulse rounded-xl bg-gray-200" />
@@ -29,7 +29,7 @@ export function NoteCardSkeleton() {
 
 export function NoteDetailSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-white">
+    <div className="overflow-hidden rounded-2xl border border---border bg-white">
       <div className="px-6 py-8 sm:px-10 sm:py-10">
         <div className="h-6 w-24 animate-pulse rounded-full bg-gray-200" />
 
@@ -37,7 +37,7 @@ export function NoteDetailSkeleton() {
 
         <div className="mt-5 h-4 w-48 animate-pulse rounded bg-gray-200" />
 
-        <div className="mt-8 h-px bg-[var(--border)]" />
+        <div className="mt-8 h-px bg---border" />
       </div>
 
       <div className="px-6 pb-8 sm:px-10 sm:pb-10">
@@ -50,7 +50,7 @@ export function NoteDetailSkeleton() {
         </div>
       </div>
 
-      <div className="border-t border-[var(--border)] px-6 py-6 sm:px-10">
+      <div className="border-t border---border px-6 py-6 sm:px-10">
         <div className="h-11 w-28 animate-pulse rounded-xl bg-gray-200" />
       </div>
     </div>
