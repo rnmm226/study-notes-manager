@@ -22,302 +22,225 @@ export default function NotesPage() {
   const [search, setSearch] = useState("");
   const [subjectFilter, setSubjectFilter] = useState("All");
   const [toast, setToast] = useState("");
-  const [toastType, setToastType] =
-    useState<"success" | "error">("success");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
   useEffect(() => {
     async function loadNotes() {
       try {
-        const response = await fetch("/api/notes");
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch notes");
-        }
-
-        const data = await response.json();
-
-        setNotes(data);
-        setError("");
-      } catch (error) {
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Something went wrong"
-        );
+        const res = await fetch("/api/notes");
+        if (!res.ok) throw new Error("Failed to fetch notes");
+        setNotes(await res.json());
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
         setLoading(false);
       }
     }
-
     loadNotes();
   }, []);
 
   async function handleDelete(id: number) {
-  try {
-    const response = await fetch(`/api/notes/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!response.ok) {
-      const data = await response.json().catch(() => null);
-
-      throw new Error(
-        data?.error || "Failed to delete note"
-      );
+    try {
+      const res = await fetch(`/api/notes/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Failed to delete note");
+      }
+      setNotes(prev => prev.filter(n => n.id !== id));
+      setToastType("success");
+      setToast("Note deleted successfully");
+    } catch (err) {
+      setToastType("error");
+      setToast(err instanceof Error ? err.message : "Failed to delete note");
+      throw err;
     }
-
-    setNotes((currentNotes) =>
-      currentNotes.filter((note) => note.id !== id)
-    );
-
-    setToastType("success");
-    setToast("Note deleted successfully");
-  } catch (error) {
-    setToastType("error");
-    setToast(
-      error instanceof Error
-        ? error.message
-        : "Failed to delete note"
-    );
-
-    throw error;
   }
-}
 
-  const subjects = useMemo(() => {
-    return [
-      "All",
-      ...Array.from(
-        new Set(notes.map((note) => note.subject))
-      ),
-    ];
-  }, [notes]);
+  const subjects = useMemo(() =>
+    ["All", ...Array.from(new Set(notes.map(n => n.subject)))],
+    [notes]
+  );
 
   const filteredNotes = useMemo(() => {
-    const normalizedSearch = search.toLowerCase().trim();
-
-    return notes.filter((note) => {
-      const matchesSearch =
-        note.title
-          .toLowerCase()
-          .includes(normalizedSearch) ||
-        note.content
-          .toLowerCase()
-          .includes(normalizedSearch) ||
-        note.subject
-          .toLowerCase()
-          .includes(normalizedSearch);
-
-      const matchesSubject =
-        subjectFilter === "All" ||
-        note.subject === subjectFilter;
-
-      return matchesSearch && matchesSubject;
+    const q = search.toLowerCase().trim();
+    return notes.filter(n => {
+      const matchSearch = !q ||
+        n.title.toLowerCase().includes(q) ||
+        n.content.toLowerCase().includes(q) ||
+        n.subject.toLowerCase().includes(q);
+      const matchSubject = subjectFilter === "All" || n.subject === subjectFilter;
+      return matchSearch && matchSubject;
     });
   }, [notes, search, subjectFilter]);
 
-  function clearFilters() {
-    setSearch("");
-    setSubjectFilter("All");
-  }
+  const hasFilters = search || subjectFilter !== "All";
 
   return (
-    
     <>
-    <ToastContainer
-      message={toast}
-      type={toastType}
-      onClose={() => setToast("")}
-    />
+      <ToastContainer message={toast} type={toastType} onClose={() => setToast("")} />
 
-    <main className="min-h-screen bg-(--background)">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:py-16">
+      <main style={{ minHeight: "100vh", background: "var(--background)" }}>
+        <div style={{ maxWidth: "1152px", margin: "0 auto", padding: "3rem 1.5rem" }}>
 
-        {/* Header */}
-        <section className="animate-fade-up">
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-wider --primary">
-                Your collection
-              </p>
-
-              <h1 className="display-title text-4xl font-bold tracking-tight --foreground sm:text-5xl">
-                My Notes
-              </h1>
-
-              <p className="mt-3 max-w-2xl text-base leading-7 --muted">
-                Browse, search, and manage all your study notes
-                in one place.
-              </p>
+          {/* Header */}
+          <section className="animate-fade-up" style={{ marginBottom: "2.5rem" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem" }}>
+              <div>
+                <p style={{ fontSize: "0.8125rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--primary)", marginBottom: "0.5rem" }}>
+                  Your collection
+                </p>
+                <h1 className="display-title" style={{ fontSize: "2.5rem", fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.03em" }}>
+                  My Notes
+                </h1>
+                <p style={{ marginTop: "0.5rem", fontSize: "0.9375rem", color: "var(--muted)", maxWidth: "460px" }}>
+                  Browse, search, and manage all your study notes.
+                </p>
+              </div>
+              <Link href="/notes/new" className="primary-button" style={{ flexShrink: 0 }}>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"/>
+                </svg>
+                New Note
+              </Link>
             </div>
+          </section>
 
-            <Link
-              href="/notes/new"
-              className="primary-button shrink-0"
-            >
-              + New Note
-            </Link>
-          </div>
-        </section>
-
-        {/* Search & Filter */}
-        {!loading && notes.length > 0 && (
-          <section className="mt-10 animate-fade-up [animation-delay:100ms]">
-            <div className="card p-4 sm:p-5">
-              <div className="flex flex-col gap-3 md:flex-row">
-
-                <div className="relative flex-1">
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base --muted-light">
-                    🔍
-                  </span>
-
+          {/* Search + Filter */}
+          {!loading && notes.length > 0 && (
+            <section className="animate-fade-up" style={{ marginBottom: "2rem", animationDelay: "80ms" }}>
+              <div
+                className="card"
+                style={{ padding: "1rem", display: "flex", flexWrap: "wrap", gap: "0.75rem" }}
+              >
+                {/* Search */}
+                <div style={{ position: "relative", flex: "1 1 200px" }}>
+                  <svg
+                    width="16" height="16" viewBox="0 0 20 20" fill="none"
+                    style={{ position: "absolute", left: "0.875rem", top: "50%", transform: "translateY(-50%)", color: "var(--muted-light)", pointerEvents: "none" }}
+                  >
+                    <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" strokeWidth="1.8"/>
+                    <path d="M14 14l3.5 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
                   <input
                     type="text"
                     value={search}
-                    onChange={(event) =>
-                      setSearch(event.target.value)
-                    }
-                    placeholder="Search notes..."
-                    className="w-full rounded-xl border border---border bg-(--background) py-3 pl-11 pr-4 text-sm --foreground outline-none transition placeholder:--muted-light focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10"
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Search by title, subject or content…"
+                    className="form-input"
+                    style={{ paddingLeft: "2.5rem" }}
                   />
                 </div>
 
+                {/* Subject select */}
                 <select
                   value={subjectFilter}
-                  onChange={(event) =>
-                    setSubjectFilter(event.target.value)
-                  }
-                  className="rounded-xl border border---border bg-(--background) px-4 py-3 text-sm font-medium --foreground outline-none transition focus:border---primary focus:bg-white focus:ring-2 focus:ring---primary/10"
+                  onChange={e => setSubjectFilter(e.target.value)}
+                  className="form-input"
+                  style={{ flex: "0 1 180px", cursor: "pointer" }}
                 >
-                  {subjects.map((subject) => (
-                    <option key={subject} value={subject}>
-                      {subject === "All"
-                        ? "All Subjects"
-                        : subject}
-                    </option>
+                  {subjects.map(s => (
+                    <option key={s} value={s}>{s === "All" ? "All subjects" : s}</option>
                   ))}
                 </select>
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          )}
 
-        {/* Loading */}
-        {loading && (
-          <section className="mt-10 grid gap-5 md:grid-cols-2">
-            {[1, 2, 3, 4].map((item) => (
-              <NoteCardSkeleton key={item} />
-            ))}
-          </section>
-        )}
+          {/* Loading */}
+          {loading && (
+            <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "1.25rem" }}>
+              {[1, 2, 3, 4].map(i => <NoteCardSkeleton key={i} />)}
+            </section>
+          )}
 
-        {/* Error */}
-        {!loading && error && (
-          <section className="mt-10 animate-scale-in rounded-2xl border border-red-100 bg-red-50 p-6 text-red-600">
-            <p className="font-semibold">
-              Something went wrong
-            </p>
+          {/* Error */}
+          {!loading && error && (
+            <section
+              className="card animate-scale-in"
+              style={{ padding: "1.5rem", background: "var(--danger-light)", border: "1px solid #fca5a5" }}
+            >
+              <p style={{ fontWeight: 600, color: "#991b1b" }}>Something went wrong</p>
+              <p style={{ marginTop: "0.25rem", fontSize: "0.875rem", color: "#b91c1c" }}>{error}</p>
+            </section>
+          )}
 
-            <p className="mt-1 text-sm">
-              {error}
-            </p>
-          </section>
-        )}
-
-        {/* Empty database */}
-        {!loading &&
-          !error &&
-          notes.length === 0 && (
-            <section className="card mt-10 animate-scale-in p-10 text-center sm:p-16">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg---primary-light text-3xl">
+          {/* Empty state */}
+          {!loading && !error && notes.length === 0 && (
+            <section className="card animate-scale-in" style={{ textAlign: "center", padding: "4rem 2rem" }}>
+              <div style={{
+                width: 64, height: 64, borderRadius: 18,
+                background: "var(--primary-light)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "1.75rem", margin: "0 auto 1.5rem",
+              }}>
                 📝
               </div>
-
-              <h2 className="mt-6 text-2xl font-bold --foreground">
-                No notes yet
-              </h2>
-
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 --muted">
-                Your collection is empty. Create your first
-                study note to get started.
+              <h2 style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--foreground)" }}>No notes yet</h2>
+              <p style={{ marginTop: "0.5rem", fontSize: "0.875rem", color: "var(--muted)", maxWidth: "360px", margin: "0.5rem auto 0" }}>
+                Your collection is empty. Create your first study note to get started.
               </p>
-
-              <Link
-                href="/notes/new"
-                className="primary-button mt-6 inline-flex"
-              >
+              <Link href="/notes/new" className="primary-button" style={{ display: "inline-flex", marginTop: "1.75rem" }}>
                 Create your first note
               </Link>
             </section>
           )}
 
-        {/* Notes */}
-        {!loading &&
-          !error &&
-          notes.length > 0 && (
-            <section className="mt-10">
-
-              <div className="mb-5 flex items-center justify-between gap-4">
-                <p className="text-sm font-medium --muted">
-                  {filteredNotes.length}{" "}
-                  {filteredNotes.length === 1
-                    ? "note"
-                    : "notes"}{" "}
-                  found
+          {/* Notes grid */}
+          {!loading && !error && notes.length > 0 && (
+            <section>
+              <div style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                marginBottom: "1.25rem", gap: "1rem",
+              }}>
+                <p style={{ fontSize: "0.875rem", color: "var(--muted)", fontWeight: 500 }}>
+                  {filteredNotes.length} {filteredNotes.length === 1 ? "note" : "notes"} found
                 </p>
-
-                {(search || subjectFilter !== "All") && (
+                {hasFilters && (
                   <button
                     type="button"
-                    onClick={clearFilters}
-                    className="text-sm font-semibold --primary transition hover:--primary-dark"
+                    onClick={() => { setSearch(""); setSubjectFilter("All"); }}
+                    style={{
+                      fontSize: "0.875rem", fontWeight: 600, color: "var(--primary)",
+                      background: "none", border: "none", cursor: "pointer", padding: 0,
+                    }}
                   >
-                    Clear filters
+                    Clear filters ×
                   </button>
                 )}
               </div>
 
-              {/* No results */}
-              {filteredNotes.length === 0 && (
-                <div className="card animate-scale-in p-10 text-center sm:p-14">
-                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg---primary-light text-2xl">
-                    🔎
-                  </div>
-
-                  <h2 className="mt-5 text-xl font-bold --foreground">
-                    No matching notes
-                  </h2>
-
-                  <p className="mt-2 text-sm --muted">
-                    Try another search term or subject.
+              {filteredNotes.length === 0 ? (
+                <div className="card animate-scale-in" style={{ textAlign: "center", padding: "3rem 2rem" }}>
+                  <div style={{
+                    width: 56, height: 56, borderRadius: 14,
+                    background: "var(--primary-light)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "1.5rem", margin: "0 auto 1.25rem",
+                  }}>🔎</div>
+                  <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--foreground)" }}>No matching notes</h2>
+                  <p style={{ marginTop: "0.5rem", fontSize: "0.875rem", color: "var(--muted)" }}>
+                    Try a different search term or subject.
                   </p>
-
                   <button
                     type="button"
-                    onClick={clearFilters}
-                    className="primary-button mt-6"
+                    onClick={() => { setSearch(""); setSubjectFilter("All"); }}
+                    className="primary-button"
+                    style={{ display: "inline-flex", marginTop: "1.5rem" }}
                   >
                     Clear filters
                   </button>
                 </div>
-              )}
-
-              {/* Note cards */}
-              {filteredNotes.length > 0 && (
-                <div className="grid gap-5 md:grid-cols-2">
-                  {filteredNotes.map((note, index) => (
-                    <NoteCard
-                      key={note.id}
-                      note={note}
-                      index={index}
-                      onDelete={handleDelete}
-                    />
+              ) : (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "1.25rem" }}>
+                  {filteredNotes.map((note, i) => (
+                    <NoteCard key={note.id} note={note} index={i} onDelete={handleDelete} />
                   ))}
                 </div>
               )}
             </section>
           )}
-      </div>
-    </main>
+        </div>
+      </main>
     </>
   );
 }
