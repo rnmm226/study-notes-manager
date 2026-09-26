@@ -7,29 +7,23 @@ import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     setError("");
     setLoading(true);
 
     try {
-      const { error } = await authClient.signIn.email({
-        email,
-        password,
-      });
-
+      const { error } = await authClient.signIn.email({ email, password });
       if (error) {
         setError(error.message || "Invalid email or password.");
         return;
       }
-
       router.push("/");
       router.refresh();
     } catch {
@@ -40,87 +34,214 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-(--background) px-4 py-12">
-      <div className="mx-auto max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="display-title text-4xl font-bold --foreground">
-            Welcome back
-          </h1>
+    <main
+      className="min-h-screen"
+      style={{
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr",
+        background: "var(--background)",
+      }}
+    >
+      {/* Left panel — decorative */}
+      <div
+        className="hidden lg:flex"
+        style={{
+          background: "linear-gradient(135deg, #6555e0 0%, #7c6af7 50%, #a78bfa 100%)",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          padding: "3rem",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Blobs */}
+        <div style={{
+          position: "absolute", top: "-80px", right: "-80px",
+          width: "320px", height: "320px", borderRadius: "50%",
+          background: "rgba(255,255,255,0.08)",
+        }} />
+        <div style={{
+          position: "absolute", bottom: "-60px", left: "-60px",
+          width: "260px", height: "260px", borderRadius: "50%",
+          background: "rgba(255,255,255,0.06)",
+        }} />
 
-          <p className="mt-3 text-sm --muted">
-            Sign in to manage your study notes.
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: 12,
+            background: "rgba(255,255,255,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "1.25rem", fontWeight: 800, color: "white",
+          }}>S</div>
+          <span style={{ color: "white", fontWeight: 700, fontSize: "1.1rem" }}>Study Notes</span>
+        </div>
+
+        {/* Quote */}
+        <div>
+          <blockquote style={{ color: "white", fontSize: "1.5rem", fontWeight: 700, lineHeight: 1.4, fontFamily: "var(--font-fraunces), serif", letterSpacing: "-0.02em" }}>
+            "The secret of getting ahead is getting started."
+          </blockquote>
+          <p style={{ color: "rgba(255,255,255,0.65)", marginTop: "1rem", fontSize: "0.875rem" }}>
+            — Mark Twain
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="card animate-scale-in"
-        >
-          {error && (
-            <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-              {error}
+        {/* Features */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+          {["Create & organize your notes", "Filter by subject instantly", "Access from anywhere"].map((f) => (
+            <div key={f} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div style={{
+                width: 22, height: 22, borderRadius: "50%",
+                background: "rgba(255,255,255,0.2)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                  <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.875rem" }}>{f}</span>
             </div>
-          )}
+          ))}
+        </div>
+      </div>
 
-          <div className="space-y-5">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-semibold"
-              >
-                Email
-              </label>
-
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="w-full rounded-xl border border---border bg-white px-4 py-3 text-sm outline-none transition focus:border---primary focus:ring-2 focus:ring---primary-light"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm font-semibold"
-              >
-                Password
-              </label>
-
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="w-full rounded-xl border border---border bg-white px-4 py-3 text-sm outline-none transition focus:border---primary focus:ring-2 focus:ring---primary-light"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="primary-button w-full disabled:cursor-not-allowed disabled:opacity-60"
+      {/* Right panel — form */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "2rem 1.5rem",
+        gridColumn: "1 / -1",
+      }}
+        className="lg:grid-cols-none"
+      >
+        <div style={{ width: "100%", maxWidth: "420px" }}>
+          {/* Header */}
+          <div style={{ marginBottom: "2rem" }}>
+            <h1
+              className="display-title"
+              style={{ fontSize: "2rem", fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.03em" }}
             >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
+              Welcome back
+            </h1>
+            <p style={{ marginTop: "0.5rem", fontSize: "0.9rem", color: "var(--muted)" }}>
+              Sign in to access your study notes.
+            </p>
           </div>
 
-          <p className="mt-6 text-center text-sm --muted">
-            Dont have an account?{" "}
-            <Link
-              href="/register"
-              className="font-semibold --primary hover:underline"
-            >
-              Create one
-            </Link>
-          </p>
-        </form>
+          <form onSubmit={handleSubmit} className="card animate-scale-in" style={{ padding: "2rem" }}>
+            {error && (
+              <div
+                className="animate-scale-in"
+                style={{
+                  marginBottom: "1.25rem",
+                  borderRadius: "10px",
+                  border: "1px solid #fca5a5",
+                  background: "var(--danger-light)",
+                  padding: "0.75rem 1rem",
+                  fontSize: "0.875rem",
+                  color: "#991b1b",
+                  fontWeight: 500,
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+              <div>
+                <label htmlFor="email" style={labelStyle}>Email address</label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="form-input"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                />
+              </div>
+
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                  <label htmlFor="password" style={labelStyle}>Password</label>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    className="form-input"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    style={{ paddingRight: "2.75rem" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute", right: "0.75rem", top: "50%",
+                      transform: "translateY(-50%)",
+                      background: "none", border: "none", cursor: "pointer",
+                      color: "var(--muted-light)", padding: "4px",
+                    }}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="primary-button"
+                style={{ width: "100%", marginTop: "0.25rem", justifyContent: "center" }}
+              >
+                {loading ? (
+                  <>
+                    <span style={{
+                      display: "inline-block", width: 14, height: 14,
+                      border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "white",
+                      borderRadius: "50%", animation: "spin 0.75s linear infinite",
+                    }} />
+                    Signing in…
+                  </>
+                ) : "Sign in"}
+              </button>
+            </div>
+
+            <p style={{ marginTop: "1.5rem", textAlign: "center", fontSize: "0.875rem", color: "var(--muted)" }}>
+              Don&apos;t have an account?{" "}
+              <Link href="/register" style={{ fontWeight: 600, color: "var(--primary)", textDecoration: "none" }}>
+                Create one
+              </Link>
+            </p>
+          </form>
+        </div>
       </div>
     </main>
   );
 }
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  marginBottom: "0.5rem",
+  fontSize: "0.8125rem",
+  fontWeight: 600,
+  color: "var(--foreground)",
+};
