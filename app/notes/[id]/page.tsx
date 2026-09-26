@@ -7,95 +7,128 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default async function NoteDetailsPage({
-  params,
-}: PageProps) {
+export default async function NoteDetailsPage({ params }: PageProps) {
   const { id } = await params;
-
   const noteId = Number(id);
 
-  if (Number.isNaN(noteId)) {
-    notFound();
-  }
+  if (Number.isNaN(noteId)) notFound();
 
-  const note = await prisma.note.findUnique({
-    where: {
-      id: noteId,
-    },
-  });
+  const note = await prisma.note.findUnique({ where: { id: noteId } });
+  if (!note) notFound();
 
-  if (!note) {
-    notFound();
-  }
+  const wordCount = note.content.trim().split(/\s+/).filter(Boolean).length;
+  const readTime = Math.max(1, Math.round(wordCount / 200));
 
   return (
-    <main className="min-h-screen bg-(--background)">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:py-16">
+    <main style={{ minHeight: "100vh", background: "var(--background)" }}>
+      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "3rem 1.5rem" }}>
 
-        {/* Back */}
+        {/* Breadcrumb */}
         <Link
           href="/notes"
-          className="animate-fade-up inline-flex items-center text-sm font-medium --muted transition hover:--primary"
+          className="animate-fade-up"
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "0.375rem",
+            fontSize: "0.875rem", fontWeight: 500, color: "var(--muted)",
+            textDecoration: "none", marginBottom: "2rem",
+            transition: "color 0.15s",
+          }}
+          onMouseEnter={undefined}
         >
-          ← Back to notes
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Back to notes
         </Link>
 
         {/* Article */}
-        <article className="mt-8 animate-scale-in rounded-2xl border border---border bg-white shadow-sm">
+        <article className="card animate-scale-in" style={{ padding: 0, overflow: "hidden" }}>
+
+          {/* Accent bar */}
+          <div style={{ height: "4px", background: "linear-gradient(90deg, var(--primary) 0%, #a78bfa 100%)" }} />
 
           {/* Header */}
-          <header className="px-6 py-8 sm:px-10 sm:py-10">
-            <SubjectBadge subject={note.subject} />
+          <header style={{ padding: "2rem 2.5rem 1.5rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
+              <SubjectBadge subject={note.subject} />
+            </div>
 
-            <h1 className="mt-5 text-4xl font-bold tracking-tight --foreground sm:text-5xl">
+            <h1
+              className="display-title"
+              style={{
+                fontSize: "2rem", fontWeight: 800, color: "var(--foreground)",
+                letterSpacing: "-0.03em", lineHeight: 1.25,
+              }}
+            >
               {note.title}
             </h1>
 
-            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm --muted-light">
-              <span>
-                Created{" "}
-                {new Date(note.createdAt).toLocaleDateString()}
-              </span>
-
-              {note.updatedAt !== note.createdAt && (
-                <span>
-                  Updated{" "}
-                  {new Date(note.updatedAt).toLocaleDateString()}
-                </span>
+            {/* Meta */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginTop: "1rem" }}>
+              <MetaItem icon="📅" text={`Created ${new Date(note.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}`} />
+              {note.updatedAt.toString() !== note.createdAt.toString() && (
+                <MetaItem icon="✏️" text={`Updated ${new Date(note.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`} />
               )}
+              <MetaItem icon="📖" text={`${wordCount} words · ${readTime} min read`} />
             </div>
 
-            {/* Divider */}
-            <div className="mt-8 h-px bg-gradient-to-r from---primary/40 via---border to-transparent" />
+            <div style={{ marginTop: "1.75rem", height: "1px", background: "linear-gradient(90deg, var(--primary), var(--border), transparent)" }} />
           </header>
 
           {/* Content */}
-          <div className="px-6 pb-8 sm:px-10 sm:pb-10">
-            <div className="max-w-3xl">
-              <div className="whitespace-pre-wrap text-base leading-8 --foreground/80">
-                {note.content}
-              </div>
+          <div style={{ padding: "0 2.5rem 2rem" }}>
+            <div
+              style={{
+                fontSize: "0.9375rem",
+                lineHeight: 1.85,
+                color: "var(--foreground)",
+                opacity: 0.85,
+                whiteSpace: "pre-wrap",
+                maxWidth: "680px",
+              }}
+            >
+              {note.content}
             </div>
           </div>
 
-          {/* Actions */}
-          <footer className="flex flex-col gap-3 border-t border---border px-6 py-6 sm:flex-row sm:items-center sm:px-10">
-            <Link
-              href={`/notes/${note.id}/edit`}
-              className="primary-button"
-            >
-              Edit Note
+          {/* Footer actions */}
+          <footer
+            style={{
+              display: "flex", flexWrap: "wrap", gap: "0.75rem", alignItems: "center",
+              borderTop: "1px solid var(--border)",
+              padding: "1.25rem 2.5rem",
+            }}
+          >
+            <Link href={`/notes/${note.id}/edit`} className="primary-button">
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M11.5 2.5a1.41 1.41 0 0 1 2 2L5 13H3v-2L11.5 2.5z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/>
+              </svg>
+              Edit note
             </Link>
-
             <Link
               href="/notes"
-              className="rounded-xl border border---border bg-white px-5 py-3 text-center text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:bg-(--background) hover:shadow-sm"
+              style={{
+                display: "inline-flex", alignItems: "center",
+                padding: "0.7rem 1.25rem", borderRadius: "10px",
+                border: "1.5px solid var(--border)", background: "white",
+                fontSize: "0.875rem", fontWeight: 600, color: "var(--foreground)",
+                textDecoration: "none", transition: "all 0.18s ease",
+              }}
             >
-              Back to notes
+              All notes
             </Link>
           </footer>
         </article>
       </div>
     </main>
+  );
+}
+
+function MetaItem({ icon, text }: { icon: string; text: string }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: "0.375rem", fontSize: "0.8125rem", color: "var(--muted-light)" }}>
+      <span style={{ fontSize: "0.875rem" }}>{icon}</span>
+      {text}
+    </span>
   );
 }
