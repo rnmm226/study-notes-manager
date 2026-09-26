@@ -19,11 +19,7 @@ type NoteCardProps = {
   onDelete: (id: number) => Promise<void>;
 };
 
-export default function NoteCard({
-  note,
-  index = 0,
-  onDelete,
-}: NoteCardProps) {
+export default function NoteCard({ note, index = 0, onDelete }: NoteCardProps) {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -37,86 +33,141 @@ export default function NoteCard({
     }
   }
 
+  const wordCount = note.content.trim().split(/\s+/).filter(Boolean).length;
+
   return (
     <article
-      className="card card-hover animate-fade-up"
+      className="card card-hover animate-fade-up flex flex-col"
       style={{
-        animationDelay: `${index * 70}ms`,
+        animationDelay: `${index * 60}ms`,
+        padding: "1.25rem 1.5rem",
+        minHeight: "200px",
       }}
     >
-      <div className="flex flex-col gap-5">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <SubjectBadge subject={note.subject} />
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <SubjectBadge subject={note.subject} />
+        <time
+          className="shrink-0 text-xs font-medium"
+          style={{ color: "var(--muted-light)" }}
+        >
+          {new Date(note.createdAt).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </time>
+      </div>
 
-          <time className="shrink-0 text-xs font-medium --muted-light">
-            {new Date(note.createdAt).toLocaleDateString()}
-          </time>
-        </div>
+      {/* Body */}
+      <div className="flex-1">
+        <h2
+          className="text-lg font-bold leading-snug tracking-tight"
+          style={{ color: "var(--foreground)" }}
+        >
+          {note.title}
+        </h2>
+        <p
+          className="mt-2 line-clamp-3 text-sm leading-relaxed"
+          style={{ color: "var(--muted)" }}
+        >
+          {note.content}
+        </p>
+      </div>
 
-        {/* Content */}
-        <div>
-          <h2 className="text-xl font-bold tracking-tight --foreground">
-            {note.title}
-          </h2>
-
-          <p className="mt-2 line-clamp-4 whitespace-pre-wrap text-sm leading-6 --muted">
-            {note.content}
-          </p>
-        </div>
-
-        {/* Actions */}
+      {/* Footer */}
+      <div
+        className="mt-4 pt-4"
+        style={{ borderTop: "1px solid var(--border)" }}
+      >
         {!confirmingDelete ? (
-          <div className="flex flex-wrap gap-2 border-t border---border pt-4">
-            <Link
-              href={`/notes/${note.id}`}
-              className="rounded-xl border border---border bg-white px-4 py-2 text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:border---primary hover:--primary"
-            >
-              View
-            </Link>
-
-            <Link
-              href={`/notes/${note.id}/edit`}
-              className="rounded-xl border border---border bg-white px-4 py-2 text-sm font-semibold --foreground transition hover:-translate-y-0.5 hover:border---primary hover:--primary"
-            >
-              Edit
-            </Link>
-
-            <button
-              type="button"
-              onClick={() => setConfirmingDelete(true)}
-              className="rounded-xl px-4 py-2 text-sm font-semibold --danger transition hover:bg-red-50"
-            >
-              Delete
-            </button>
+          <div className="flex items-center justify-between">
+            <span className="text-xs" style={{ color: "var(--muted-light)" }}>
+              {wordCount} {wordCount === 1 ? "word" : "words"}
+            </span>
+            <div className="flex items-center gap-1.5">
+              <Link
+                href={`/notes/${note.id}`}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+                style={{
+                  color: "var(--foreground)",
+                  background: "var(--background)",
+                  border: "1px solid var(--border)",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--primary)";
+                  (e.currentTarget as HTMLAnchorElement).style.color = "var(--primary)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = "var(--border)";
+                  (e.currentTarget as HTMLAnchorElement).style.color = "var(--foreground)";
+                }}
+              >
+                View
+              </Link>
+              <Link
+                href={`/notes/${note.id}/edit`}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+                style={{
+                  color: "var(--primary)",
+                  background: "var(--primary-light)",
+                  border: "1px solid transparent",
+                }}
+              >
+                Edit
+              </Link>
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(true)}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold transition"
+                style={{ color: "var(--danger)", background: "transparent" }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "var(--danger-light)";
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="animate-scale-in rounded-xl border border-red-100 bg-red-50 p-4">
-            <p className="text-sm font-semibold text-red-700">
+          <div
+            className="animate-scale-in rounded-xl p-3.5"
+            style={{
+              background: "var(--danger-light)",
+              border: "1px solid #fca5a5",
+            }}
+          >
+            <p className="text-sm font-semibold" style={{ color: "#991b1b" }}>
               Delete this note?
             </p>
-
-            <p className="mt-1 text-xs text-red-600/80">
-              This action cannot be undone.
+            <p className="mt-0.5 text-xs" style={{ color: "#b91c1c" }}>
+              This cannot be undone.
             </p>
-
             <div className="mt-3 flex gap-2">
               <button
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
                 disabled={deleting}
-                className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50"
+                style={{
+                  background: "white",
+                  border: "1px solid #fca5a5",
+                  color: "#374151",
+                }}
               >
                 Cancel
               </button>
-
               <button
                 type="button"
                 onClick={handleDelete}
                 disabled={deleting}
-                className="rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition disabled:opacity-50"
+                style={{ background: "var(--danger)" }}
               >
-                {deleting ? "Deleting..." : "Yes, delete"}
+                {deleting ? "Deleting…" : "Yes, delete"}
               </button>
             </div>
           </div>
