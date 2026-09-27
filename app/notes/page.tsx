@@ -79,9 +79,10 @@ export default function NotesPage() {
         <aside style={{
           width: 220, flexShrink: 0,
           borderRight: "1px solid var(--border)",
-          background: "white",
+          background: "#ffffff",
           padding: "1.5rem 0",
           position: "sticky", top: 0, height: "100vh", overflowY: "auto",
+          color: "var(--foreground)",
         }}>
           <p style={{ fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.09em", color: "var(--muted-light)", padding: "0 1rem", marginBottom: "0.625rem" }}>
             Subjects
