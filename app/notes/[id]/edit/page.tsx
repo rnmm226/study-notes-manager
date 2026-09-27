@@ -85,8 +85,8 @@ export default function EditNotePage() {
   }
 
   return (
-    <main className="min-h-screen bg-(--background)">
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 lg:py-16">
+    <main style={{ minHeight: "100vh", background: "var(--background)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "2.5rem 1.5rem" }}>
+      <div style={{ width: "100%", maxWidth: 680 }}>
         <section className="mb-8 animate-fade-up">
           <Link
             href={`/notes/${note.id}`}
