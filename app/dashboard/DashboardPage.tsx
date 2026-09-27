@@ -44,7 +44,7 @@ export default function DashboardPage() {
   useEffect(() => {
     fetch("/api/notes")
       .then(r => r.json())
-      .then(setNotes)
+      .then(data => { if (Array.isArray(data)) setNotes(data); })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
