@@ -77,10 +77,10 @@ export default function NotesPage() {
 
         {/* ── Left subject sidebar ── */}
         <aside style={{
-          width: 220, flexShrink: 0,
+          width: 200, flexShrink: 0,
           borderRight: "1px solid var(--border)",
           background: "#ffffff",
-          padding: "1.5rem 0",
+          padding: "1.25rem 0",
           position: "sticky", top: 0, height: "100vh", overflowY: "auto",
           color: "var(--foreground)",
         }}>
