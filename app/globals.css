@@ -150,11 +150,14 @@ a { text-decoration: none; }
 .app-shell {
   display: flex;
   min-height: 100vh;
+  background: var(--sidebar-bg); /* sidebar color fills gap during transitions */
 }
 .app-main {
   flex: 1;
   min-width: 0;
   overflow-y: auto;
+  background: var(--background); /* always light */
+  color: var(--foreground);
 }
 
 /* ─────────────────────────────────────
